@@ -3,7 +3,7 @@
 // EmCSTbirhFUjKOXP
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -98,7 +98,7 @@ async function run() {
           const cursor = ecoTipsCollection.find();
           const result = await cursor.toArray();
           res.send(result)
-          console.log(result);
+          // console.log(result);
         })
 
         
@@ -107,9 +107,16 @@ async function run() {
           const cursor = eventsCollection.find();
           const result = await cursor.toArray();
           res.send(result)
-          console.log(result);
+          // console.log(result);
         })
 
+        // Find single event
+        app.get('/api/events/:id', async (req, res)=> {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await eventsCollection.findOne(query);
+            res.send(result);
+        })
 
 
 
