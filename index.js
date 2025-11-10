@@ -45,6 +45,7 @@ async function run() {
     const challengesCollection = db.collection("challenges");
     const ecoTipsCollection = db.collection("eco_tips");
     const eventsCollection = db.collection("events");
+    const subscribersCollection = db.collection("subscribers");
 
 
 
@@ -83,6 +84,34 @@ async function run() {
       }
     })
 
+    app.post("/api/subscribe", async (req, res) => {
+  const { name, email } = req.body;
+
+  if (!name || !email) {
+    return res.status(400).json({ message: "Name and Email are required" });
+  }
+
+  try {
+    // Check if email already exists
+    const existing = await subscribersCollection.findOne({ email });
+    if (existing) {
+      return res.status(400).json({ message: "Email already subscribed" });
+    }
+
+    // Insert new subscriber
+    const result = await subscribersCollection.insertOne({
+      name,
+      email,
+      createdAt: new Date(),
+    });
+
+    res.status(201).json({ message: "Subscribed successfully!", subscriberId: result.insertedId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
     // find  challengesCollection all data
@@ -114,6 +143,8 @@ async function run() {
         res.status(500).send({ message: "Failed to update upvotes" });
       }
     });
+
+    // 
 
     // events Collection 
     app.get('/api/events', async (req, res) => {
