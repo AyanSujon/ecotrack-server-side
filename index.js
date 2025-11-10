@@ -84,6 +84,13 @@ async function run() {
       }
     })
 
+    // find  challengesCollection all data
+    app.get('/api/participants', async (req, res) => {
+      const cursor = challengesParticipantsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
 
 // POST /api/participants - Add new participant and increase challenge count
 app.post('/api/participants', async (req, res) => {
