@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 
 
 
-app.get('/', (req, res)=>{
+app.get('/', (req, res) => {
   res.send("Server is running");
 })
 
@@ -47,18 +47,18 @@ async function run() {
     const eventsCollection = db.collection("events");
 
 
-    
+
 
     // ALl Methords 
-    app.post('/users', async (req, res)=>{
+    app.post('/users', async (req, res) => {
       const newUser = req.body;
       const email = req.body.email;
-      const query = {email: email}
+      const query = { email: email }
       const existingUser = await usersCollention.findOne(query);
-      if(existingUser){
-        res.send({message: 'User already exist, Do not need to insert again.'});
+      if (existingUser) {
+        res.send({ message: 'User already exist, Do not need to insert again.' });
       }
-      else{
+      else {
         const result = await usersCollention.insertOne(newUser);
         res.send(result);
 
@@ -67,15 +67,15 @@ async function run() {
 
 
     // Add challenges Methords 
-    app.post('/api/challenges', async (req, res)=>{
+    app.post('/api/challenges', async (req, res) => {
       const newUser = req.body;
       const createdBy = req.body.createdBy;
-      const query = {createdBy: createdBy}
+      const query = { createdBy: createdBy }
       const existingChallenges = await challengesCollection.findOne(query);
-      if(existingChallenges){
-        res.send({message: 'Challenges already exist, Do not need to insert again.'});
+      if (existingChallenges) {
+        res.send({ message: 'Challenges already exist, Do not need to insert again.' });
       }
-      else{
+      else {
         const result = await challengesCollection.insertOne(newUser);
         res.send(result);
         // console.log(result);
@@ -85,54 +85,51 @@ async function run() {
 
 
 
-        // find  challengesCollection all data
-        app.get('/api/challenges', async (req, res)=> {
-          const cursor = challengesCollection.find();
-          const result = await cursor.toArray();
-          res.send(result);
-        })
+    // find  challengesCollection all data
+    app.get('/api/challenges', async (req, res) => {
+      const cursor = challengesCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
 
-        // EcoTips Collection 
-        app.get('/api/eco-tips', async (req, res)=>{
-          const cursor = ecoTipsCollection.find();
-          const result = await cursor.toArray();
-          res.send(result)
-          // console.log(result);
-        })
+    // EcoTips Collection 
+    app.get('/api/eco-tips', async (req, res) => {
+      const cursor = ecoTipsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result)
+      // console.log(result);
+    })
 
-        
-        // events Collection 
-        app.get('/api/events', async (req, res)=>{
-          const cursor = eventsCollection.find();
-          const result = await cursor.toArray();
-          res.send(result)
-          // console.log(result);
-        })
+    // PATCH /api/eco-tips/:id/upvote for update recent Tips
+    app.patch('/api/ecotips/:id/upvote', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const update = { $inc: { upvotes: 1 }, $set: { updatedAt: new Date() } };
+        const result = await ecoTipsCollection.updateOne(query, update);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Failed to update upvotes" });
+      }
+    });
 
-        // Find single event
-        app.get('/api/events/:id', async (req, res)=> {
-            const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
-            const result = await eventsCollection.findOne(query);
-            res.send(result);
-        })
+    // events Collection 
+    app.get('/api/events', async (req, res) => {
+      const cursor = eventsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result)
+      // console.log(result);
+    })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // Find single event
+    app.get('/api/events/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await eventsCollection.findOne(query);
+      res.send(result);
+    })
 
 
 
@@ -143,7 +140,23 @@ async function run() {
 
 
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -157,7 +170,7 @@ run().catch(console.dir);
 
 
 
-app.listen(port, ()=>{
+app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 })
 
