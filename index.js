@@ -44,6 +44,7 @@ async function run() {
     const usersCollention = db.collection("users");
     const challengesCollection = db.collection("challenges");
     const ecoTipsCollection = db.collection("eco_tips");
+    const eventsCollection = db.collection("events");
 
 
     
@@ -95,6 +96,15 @@ async function run() {
         // EcoTips Collection 
         app.get('/api/eco-tips', async (req, res)=>{
           const cursor = ecoTipsCollection.find();
+          const result = await cursor.toArray();
+          res.send(result)
+          console.log(result);
+        })
+
+        
+        // events Collection 
+        app.get('/api/events', async (req, res)=>{
+          const cursor = eventsCollection.find();
           const result = await cursor.toArray();
           res.send(result)
           console.log(result);
