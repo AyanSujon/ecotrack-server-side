@@ -46,7 +46,7 @@ async function run() {
     const ecoTipsCollection = db.collection("eco_tips");
     const eventsCollection = db.collection("events");
     const subscribersCollection = db.collection("subscribers");
-
+    const challengesParticipantsCollection = db.collection("challengesParticipants");
 
 
 
@@ -83,6 +83,44 @@ async function run() {
 
       }
     })
+
+
+// POST /api/participants - Add new participant and increase challenge count
+app.post('/api/participants', async (req, res) => {
+  try {
+    const participant = req.body;
+    const { participantEmail, challengeId } = participant;
+
+    // Check if the participant already joined this challenge
+    const existing = await challengesParticipantsCollection.findOne({
+      participantEmail,
+      challengeId
+    });
+
+    if (existing) {
+      return res.status(400).send({
+        message: 'You have already joined this challenge!',
+      });
+    }
+
+    // Insert the new participant
+    const result = await challengesParticipantsCollection.insertOne(participant);
+
+    //  Update participants count in related challenge
+    await challengesCollection.updateOne(
+      { _id: new ObjectId(challengeId) },
+      { $inc: { participants: 1 } }
+    );
+
+    res.status(201).send({
+      message: 'Participant joined successfully',
+      result,
+    });
+  } catch (error) {
+    console.error('Error adding participant:', error);
+    res.status(500).send({ message: 'Server error', error });
+  }
+});
 
 
     // New subscriber Api 
