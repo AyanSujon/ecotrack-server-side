@@ -84,6 +84,8 @@ async function run() {
       }
     })
 
+
+    // New subscriber Api 
     app.post("/api/subscribe", async (req, res) => {
   const { name, email } = req.body;
 
