@@ -127,6 +127,13 @@ async function run() {
         // Fetch filtered data from MongoDB
         const result = await challengesCollection.find(filter).toArray();
 
+    // Fetch all filtered data OR all data if filter empty
+    // const result = await challengesCollection
+    //   .find(filter)
+    //   .sort({ _id: -1 }) // recent first
+    //   .toArray();
+
+
         // Send response
         res.send(result);
       } catch (error) {
