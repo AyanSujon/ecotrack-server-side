@@ -141,6 +141,7 @@ async function run() {
       // GET /api/challenges?participantsMin=50
       // GET /api/challenges?participantsMax=100
       // GET /api/challenges?participantsMin=10&participantsMax=100
+
     });
 
 
@@ -352,6 +353,101 @@ async function run() {
       const result = await eventsCollection.findOne(query);
       res.send(result);
     })
+
+
+
+
+
+
+
+
+
+
+
+
+
+// UPDATE a challenge (by ID)
+app.patch('/api/challenges/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const updatedData = req.body;
+    const query = { _id: new ObjectId(id) };
+
+
+    const updateDoc = {
+      $set: {
+        title: updatedData.title,
+        category: updatedData.category,
+        description: updatedData.description,
+        duration: updatedData.duration,
+        target: updatedData.target,
+        impactMetric: updatedData.impactMetric,
+        startDate: updatedData.startDate,
+        endDate: updatedData.endDate,
+        imageUrl: updatedData.imageUrl,
+        updatedAt: new Date(),
+      },
+    };
+
+    const result = await challengesCollection.updateOne(query, updateDoc);
+    res.send(result);
+  } catch (error) {
+    console.error("Error updating challenge:", error);
+    res.status(500).send({ message: "Failed to update challenge" });
+  }
+});
+
+
+// DELETE a challenge (by ID)
+app.delete('/api/challenges/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+
+    const result = await challengesCollection.deleteOne(query);
+    res.send(result);
+  } catch (error) {
+    console.error("Error deleting challenge:", error);
+    res.status(500).send({ message: "Failed to delete challenge" });
+  }
+});
+
+
+
+
+    // Find single Challenges by id
+    app.get('/api/challenges/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await challengesCollection.findOne(query);
+      res.send(result);
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
