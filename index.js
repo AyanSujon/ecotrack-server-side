@@ -127,11 +127,6 @@ async function run() {
         // Fetch filtered data from MongoDB
         const result = await challengesCollection.find(filter).toArray();
 
-    // Fetch all filtered data OR all data if filter empty
-    // const result = await challengesCollection
-    //   .find(filter)
-    //   .sort({ _id: -1 }) // recent first
-    //   .toArray();
 
 
         // Send response
@@ -165,12 +160,12 @@ async function run() {
 
 
 
-    // // find  challengesCollection all data
-    // app.get('/api/participants', async (req, res) => {
-    //   const cursor = challengesParticipantsCollection.find();
-    //   const result = await cursor.toArray();
-    //   res.send(result);
-    // })
+    // find  challengesCollection all data
+    app.get('/api/participants', async (req, res) => {
+      const cursor = challengesParticipantsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
 
 
