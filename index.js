@@ -66,23 +66,55 @@ async function run() {
       }
     })
 
-
-    // Add challenges Methords 
-    app.post('/api/challenges', async (req, res) => {
-      const newUser = req.body;
-      const createdBy = req.body.createdBy;
-      const query = { createdBy: createdBy }
-      const existingChallenges = await challengesCollection.findOne(query);
-      if (existingChallenges) {
-        res.send({ message: 'Challenges already exist, Do not need to insert again.' });
-      }
-      else {
-        const result = await challengesCollection.insertOne(newUser);
-        res.send(result);
-        // console.log(result);
-
-      }
+        // find  challengesCollection all data
+    app.get('/api/challenges', async (req, res) => {
+      const cursor = challengesCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
     })
+
+
+    // // Add challenges Methords 
+    // app.post('/api/challenges', async (req, res) => {
+    //   const newUser = req.body;
+    //   const createdBy = req.body.createdBy;
+    //   const query = { createdBy: createdBy }
+    //   const existingChallenges = await challengesCollection.findOne(query);
+    //   if (existingChallenges) {
+    //     res.send({ message: 'Challenges already exist, Do not need to insert again.' });
+    //   }
+    //   else {
+    //     const result = await challengesCollection.insertOne(newUser);
+    //     res.send(result);
+    //     // console.log(result);
+
+    //   }
+    // })
+
+// Add challenges Method
+app.post('/api/challenges', async (req, res) => {
+  const newChallenge = req.body;
+  const { createdBy, title } = newChallenge;
+
+  // Check if the same user already added this specific challenge title
+  const query = { createdBy: createdBy, title: title };
+  const existingChallenge = await challengesCollection.findOne(query);
+
+  if (existingChallenge) {
+    return res.status(400).send({
+      success: false,
+      message: 'You have already added this challenge. Please choose a different title.'
+    });
+  }
+
+  // If not found, insert the new challenge
+  const result = await challengesCollection.insertOne(newChallenge);
+  res.send({ success: true, result });
+});
+
+
+
+
 
     // find  challengesCollection all data
     app.get('/api/participants', async (req, res) => {
@@ -161,12 +193,6 @@ app.post('/api/participants', async (req, res) => {
 
 
 
-    // find  challengesCollection all data
-    app.get('/api/challenges', async (req, res) => {
-      const cursor = challengesCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    })
 
 
     // EcoTips Collection 
