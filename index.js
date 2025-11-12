@@ -105,10 +105,10 @@ async function run() {
     //   const result = await cursor.toArray();
     //   res.send(result);
     // })
-
+    
 
     // participants range filtering using $gte / $lte Example query:
-    app.get('/api/challenges', async (req, res) => {
+    app.get('/api/challenges',  async (req, res) => {
       try {
         // Get query parameters from URL
         const { participantsMin, participantsMax, category, startDateFrom, startDateTo } = req.query;
