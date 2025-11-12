@@ -12,6 +12,39 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// const verifyfirebaseToken = (req, res, next)=>{
+//   console.log("in the verify middleware", req.headers.authorization);
+
+
+
+//   next();
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // mongoDB URI and Client 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.tachgq7.mongodb.net/?appName=Cluster0`;
 // const uri = "mongodb+srv://assignment-B12A10:EmCSTbirhFUjKOXP@cluster0.tachgq7.mongodb.net/?appName=Cluster0";
@@ -211,7 +244,7 @@ async function run() {
 
 
     // Add challenges Method
-    app.post('/api/challenges', async (req, res) => {
+    app.post('/api/challenges',  async (req, res) => {
       const newChallenge = req.body;
       const { createdBy, title } = newChallenge;
 
